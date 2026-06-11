@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Korean A1 Daily Passages</title>
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      max-width: 680px;
+      margin: 40px auto;
+      padding: 0 24px 60px;
+      background: #fafaf8;
+      color: #2d2d2d;
+      line-height: 1.7;
+    }
+    h1 {
+      font-size: 1.6rem;
+      color: #5a2a6b;
+      border-bottom: 2px solid #b06ad4;
+      padding-bottom: 10px;
+    }
+    .subtitle {
+      color: #888;
+      font-size: 0.9rem;
+      margin-top: -8px;
+      margin-bottom: 1.5rem;
+    }
+
+    /* --- View toggle --- */
+    .view-toggle {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 1rem;
+    }
+    .view-btn {
+      padding: 5px 14px;
+      border: 1.5px solid #b06ad4;
+      border-radius: 20px;
+      background: #fff;
+      color: #7a3a9a;
+      font-size: 0.82rem;
+      font-family: sans-serif;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .view-btn.active {
+      background: #b06ad4;
+      color: #fff;
+      border-color: #b06ad4;
+    }
+    .view-btn:hover:not(.active) {
+      background: #f5e8fa;
+    }
+
+    /* --- Theme filter pills --- */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 1.2rem;
+    }
+    .filter-pill {
+      padding: 3px 12px;
+      border: 1.5px solid #ccc;
+      border-radius: 14px;
+      background: #fff;
+      color: #555;
+      font-size: 0.78rem;
+      font-family: sans-serif;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .filter-pill.active {
+      background: #5a2a6b;
+      color: #fff;
+      border-color: #5a2a6b;
+    }
+    .filter-pill:hover:not(.active) {
+      border-color: #b06ad4;
+      color: #5a2a6b;
+    }
+
+    /* --- Entry list --- */
+    .list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .list li {
+      border-bottom: 1px solid #ece0f0;
+    }
+    .list li.hidden {
+      display: none;
+    }
+    .list li a {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 14px 4px;
+      text-decoration: none;
+      color: #2d2d2d;
+      transition: background 0.15s;
+      gap: 12px;
+    }
+    .list li a:hover {
+      background: #f5e8fa;
+      border-radius: 4px;
+    }
+    .date {
+      font-size: 0.85rem;
+      color: #999;
+      white-space: nowrap;
+      font-family: monospace;
+    }
+    .title-text {
+      font-weight: bold;
+      flex: 1;
+    }
+    .tag {
+      font-size: 0.75rem;
+      background: #b06ad4;
+      color: #fff;
+      padding: 2px 7px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+
+    /* --- Group headings --- */
+    .group-section { margin-bottom: 0.5rem; }
+    .group-heading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 4px 6px;
+      font-family: sans-serif;
+      font-size: 0.88rem;
+      font-weight: bold;
+      color: #5a2a6b;
+      border-bottom: 2px solid #ece0f0;
+      cursor: pointer;
+      user-select: none;
+    }
+    .group-heading:hover { color: #8a4aab; }
+    .group-count {
+      font-weight: normal;
+      color: #aaa;
+      font-size: 0.8rem;
+    }
+    .group-arrow {
+      margin-left: auto;
+      font-size: 0.75rem;
+      color: #aaa;
+      transition: transform 0.2s;
+    }
+    .group-arrow.collapsed { transform: rotate(-90deg); }
+    .group-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+    }
+    .group-list.collapsed { display: none; }
+    .group-list li { border-bottom: 1px solid #ece0f0; }
+    .group-list li a {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 12px 4px;
+      text-decoration: none;
+      color: #2d2d2d;
+      transition: background 0.15s;
+      gap: 12px;
+    }
+    .group-list li a:hover {
+      background: #f5e8fa;
+      border-radius: 4px;
+    }
+
+    .theme-view .tag { display: none; }
+    .month-view .date { display: none; }
+    .month-view-date {
+      font-size: 0.82rem;
+      color: #bbb;
+      white-space: nowrap;
+      font-family: monospace;
+      display: none;
+    }
+    .month-view .month-view-date { display: inline; }
+  </style>
+</head>
+<body>
+  <h1>🇰🇷 Korean A1 Daily Passages</h1>
+  <p class="subtitle">毎日の韓国語読解練習 — 표준한국어 · TOPIK 1</p>
+
+  <!-- View toggle -->
+  <div class="view-toggle">
+    <button class="view-btn active" data-view="date">📅 日付順</button>
+    <button class="view-btn" data-view="month">📆 月別</button>
+    <button class="view-btn" data-view="theme">🏷 テーマ別</button>
+  </div>
+
+  <!-- Theme filter pills (日付順 only) -->
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-pill active" data-filter="all">すべて</button>
+    <button class="filter-pill" data-filter="일상생활">🏠 일상생활</button>
+    <button class="filter-pill" data-filter="여행">✈️ 여행</button>
+    <button class="filter-pill" data-filter="학교/직장">💼 학교/직장</button>
+    <button class="filter-pill" data-filter="건강/스포츠">🏃 건강/스포츠</button>
+    <button class="filter-pill" data-filter="문화/사회">🌍 문화/사회</button>
+    <button class="filter-pill" data-filter="미디어/오락">🎬 미디어/오락</button>
+    <button class="filter-pill" data-filter="인간관계">💬 인간관계</button>
+  </div>
+
+  <!-- Flat list (日付順) -->
+  <div id="dateView">
+    <ul class="list" id="mainList">
+      <!-- passages will be prepended here -->
+    </ul>
+  </div>
+
+  <!-- Grouped views (月別 / テーマ別) -->
+  <div id="groupView" style="display:none"></div>
+
+  <script>
+    const items = Array.from(document.querySelectorAll('#mainList li')).map(li => ({
+      date: li.dataset.date,
+      month: li.dataset.date.slice(0, 7),
+      category: li.dataset.category,
+      href: li.querySelector('a').href,
+      title: li.querySelector('.title-text').textContent,
+      tag: li.querySelector('.tag').textContent,
+    }));
+
+    const MONTH_LABELS = {
+      '01': '1月', '02': '2月', '03': '3月', '04': '4月',
+      '05': '5月', '06': '6月', '07': '7月', '08': '8月',
+      '09': '9月', '10': '10月', '11': '11月', '12': '12月',
+    };
+    function monthLabel(ym) {
+      const [y, m] = ym.split('-');
+      return `${y}年 ${MONTH_LABELS[m]}`;
+    }
+
+    const CATEGORY_ORDER = [
+      '일상생활', '여행', '학교/직장',
+      '건강/스포츠', '문화/사회', '미디어/오락', '인간관계'
+    ];
+    const CATEGORY_ICONS = {
+      '일상생활':   '🏠',
+      '여행':       '✈️',
+      '학교/직장':  '💼',
+      '건강/스포츠': '🏃',
+      '문화/사회':  '🌍',
+      '미디어/오락': '🎬',
+      '인간관계':   '💬',
+    };
+
+    function buildGroups(groupKey, labelFn, orderFn) {
+      const map = new Map();
+      items.forEach(item => {
+        const key = item[groupKey];
+        if (!map.has(key)) map.set(key, []);
+        map.get(key).push(item);
+      });
+      const keys = orderFn([...map.keys()]);
+      return keys.map(key => {
+        const entries = map.get(key);
+        const rows = entries.map(item => `
+          <li>
+            <a href="${item.href}">
+              <span class="title-text">${item.title}</span>
+              ${groupKey === 'month'
+                ? `<span class="tag">${item.tag}</span>`
+                : `<span class="date">${item.date}</span>`}
+            </a>
+          </li>`).join('');
+        return `
+          <div class="group-section">
+            <div class="group-heading" onclick="toggleGroup(this)">
+              ${labelFn(key)}
+              <span class="group-count">${entries.length}件</span>
+              <span class="group-arrow collapsed">▼</span>
+            </div>
+            <ul class="group-list collapsed">${rows}</ul>
+          </div>`;
+      }).join('');
+    }
+
+    function toggleGroup(heading) {
+      const list = heading.nextElementSibling;
+      const arrow = heading.querySelector('.group-arrow');
+      list.classList.toggle('collapsed');
+      arrow.classList.toggle('collapsed');
+    }
+
+    let currentView = 'date';
+    let currentFilter = 'all';
+
+    function render() {
+      const dateView = document.getElementById('dateView');
+      const groupView = document.getElementById('groupView');
+      const filterBar = document.getElementById('filterBar');
+
+      if (currentView === 'date') {
+        dateView.style.display = '';
+        groupView.style.display = 'none';
+        filterBar.style.display = '';
+        document.querySelectorAll('#mainList li').forEach(li => {
+          const cat = li.dataset.category;
+          li.classList.toggle('hidden', currentFilter !== 'all' && cat !== currentFilter);
+        });
+      } else if (currentView === 'month') {
+        dateView.style.display = 'none';
+        groupView.style.display = '';
+        filterBar.style.display = 'none';
+        groupView.innerHTML = buildGroups('month', monthLabel, keys => keys.sort((a, b) => b.localeCompare(a)));
+      } else if (currentView === 'theme') {
+        dateView.style.display = 'none';
+        groupView.style.display = '';
+        filterBar.style.display = 'none';
+        groupView.innerHTML = buildGroups(
+          'category',
+          k => `${CATEGORY_ICONS[k] ?? ''} ${k}`,
+          keys => CATEGORY_ORDER.filter(c => keys.includes(c))
+        );
+      }
+    }
+
+    document.querySelectorAll('.view-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentView = btn.dataset.view;
+        render();
+      });
+    });
+
+    document.querySelectorAll('.filter-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        currentFilter = pill.dataset.filter;
+        render();
+      });
+    });
+
+    render();
+  </script>
+</body>
+</html>
