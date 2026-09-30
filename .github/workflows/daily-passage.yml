@@ -4,8 +4,8 @@ on:
   schedule:
     # ロンドン時間の毎日 01:00。夏時間（BST, 00:00 UTC）と冬時間（GMT, 01:00 UTC）の 2 本を置き、
     # scripts/tz_gate.sh でロンドン時間 01 時にあたるほうだけを実行する
-    - cron: "0 0 * * *"
-    - cron: "0 1 * * *"
+    - cron: "23 0 * * *"
+    - cron: "23 1 * * *"
   workflow_dispatch:
     inputs:
       date:
