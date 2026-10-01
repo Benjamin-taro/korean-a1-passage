@@ -1,6 +1,22 @@
 {
   "entries": [
     {
+      "date": "2026-10-01",
+      "category": "건강/스포츠",
+      "subtopic": "Visiting the doctor with a cold",
+      "title": "병원에 가요",
+      "vocab": [
+        "병원",
+        "감기",
+        "열",
+        "의사",
+        "약국",
+        "목",
+        "아프다",
+        "따뜻하다"
+      ]
+    },
+    {
       "date": "2026-09-30",
       "category": "일상생활",
       "subtopic": "Cooking kimchi fried rice at home",
