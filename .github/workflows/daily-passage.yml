@@ -2,10 +2,9 @@ name: Daily Korean A1 passage (Claude Code)
 
 on:
   schedule:
-    # ロンドン時間の毎日 01:00。夏時間（BST, 00:00 UTC）と冬時間（GMT, 01:00 UTC）の 2 本を置き、
-    # scripts/tz_gate.sh でロンドン時間 01 時にあたるほうだけを実行する
-    - cron: "23 0 * * *"
-    - cron: "23 1 * * *"
+    # GitHub の定期実行は数時間遅れたり飛ばされたりするので、1 回に頼らず毎時確認する。
+    # UTC 0:23〜9:23 の毎時に動き、今日（ロンドン時間）の passage がまだなければ作る。作成済みなら確認だけで終わる
+    - cron: "23 0-9 * * *"
   workflow_dispatch:
     inputs:
       date:
@@ -31,9 +30,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: TZ gate
+      - name: Skip if already generated
         id: gate
-        run: scripts/tz_gate.sh "${{ github.event.schedule }}" 1
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ] && [ -f "passages/$(date +%F)/$(date +%F).md" ]; then
+            echo "passages/$(date +%F) は作成済み"; echo "run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Decide date
         id: date
