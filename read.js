@@ -8,7 +8,14 @@
   const BRANCH = "main";
   const KEY = "news-catchup:gh-token";
   const SETTINGS_URL = "https://benjamin-taro.github.io/news-catchup/settings.html";
-  const API = `https://api.github.com/repos/${OWNER}/${REPO}/contents/read.json`;
+  // 言語のタブ（3 つのサイトを行き来する）。並び順がタブの順
+  const SITES = [
+    { repo: "dele-b1-passage", label: "🇪🇸 Español" },
+    { repo: "french-a1-passage", label: "🇫🇷 Français" },
+    { repo: "korean-a1-passage", label: "🇰🇷 한국어" },
+  ];
+  const apiFor = (repo) => `https://api.github.com/repos/${OWNER}/${repo}/contents/read.json`;
+  const API = apiFor(REPO);
   if (!REPO) return;
 
   const token = (() => { try { return localStorage.getItem(KEY) || ""; } catch { return ""; } })();
@@ -23,15 +30,15 @@
   };
 
   // 既読の状態を読む。トークンがあれば API から（最新）、なければ公開されている read.json から
-  async function load() {
+  async function load(repo = REPO) {
     if (token) {
-      const res = await fetch(`${API}?ref=${BRANCH}`, { headers, cache: "no-store" });
+      const res = await fetch(`${apiFor(repo)}?ref=${BRANCH}`, { headers, cache: "no-store" });
       if (res.status === 404) return { sha: null, read: {} };
       if (!res.ok) throw new Error(`GitHub ${res.status}`);
       const json = await res.json();
       return { sha: json.sha, read: (JSON.parse(b64decode(json.content)).read) || {} };
     }
-    const res = await fetch(`/${REPO}/read.json?t=${Date.now()}`, { cache: "no-store" });
+    const res = await fetch(`/${repo}/read.json?t=${Date.now()}`, { cache: "no-store" });
     return { sha: null, read: res.ok ? ((await res.json()).read || {}) : {} };
   }
 
@@ -72,9 +79,20 @@
       border: 1px solid #c9b48a; background: #fff; color: #5b4310; }
     .rd-summary button[aria-pressed="true"] { background: #5b4310; color: #fff; border-color: #5b4310; }
     body.rd-unread-only li.rd-li-read { display: none !important; }
+    .rd-tabs { position: sticky; top: 0; z-index: 40; display: flex; gap: 6px; padding: 8px 12px; margin: 0 0 12px;
+      background: rgba(255,250,240,.96); border-bottom: 1px solid #e3d5b8; overflow-x: auto;
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif; }
+    .rd-tab { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px;
+      font-size: 14px; text-decoration: none; color: #5b4310; border: 1px solid #d9c7a0; background: #fff; min-height: 40px; box-sizing: border-box; }
+    .rd-tab[aria-current="page"] { background: #5b4310; color: #fff; border-color: #5b4310; font-weight: 700; }
+    .rd-badge { font-size: 12px; padding: 1px 7px; border-radius: 999px; background: #c2410c; color: #fff; }
+    .rd-badge.rd-zero { background: #2f7d4f; }
     @media (prefers-color-scheme: dark) {
       .rd-btn { background: #2b2620; color: #f0e2c4; border-color: #b8862f; }
       .rd-note, .rd-summary button { background: #2b2620; color: #e8dcc4; border-color: #5c5140; }
+      .rd-tabs { background: rgba(30,27,22,.96); border-color: #4a4132; }
+      .rd-tab { background: #2b2620; color: #e8dcc4; border-color: #5c5140; }
+      .rd-tab[aria-current="page"] { background: #e8dcc4; color: #2b2620; border-color: #e8dcc4; }
     }`;
   document.head.appendChild(css);
 
@@ -85,6 +103,42 @@
     el.textContent = msg;
     document.body.appendChild(el);
     setTimeout(() => el.remove(), 2600);
+  }
+
+  // ---- 言語のタブ：全ページの上部に出す。未読の本数も表示する ----
+  function initTabs() {
+    const nav = document.createElement("nav");
+    nav.className = "rd-tabs";
+    nav.setAttribute("aria-label", "言語の切り替え");
+    for (const site of SITES) {
+      const a = document.createElement("a");
+      a.className = "rd-tab";
+      a.href = `/${site.repo}/`;
+      a.dataset.repo = site.repo;
+      if (site.repo === REPO) a.setAttribute("aria-current", "page");
+      a.append(site.label);
+      nav.appendChild(a);
+    }
+    document.body.insertBefore(nav, document.body.firstChild);
+    refreshTabs();
+  }
+  async function refreshTabs() {
+    await Promise.all(SITES.map(async (site) => {
+      try {
+        const [hist, state] = await Promise.all([
+          fetch(`/${site.repo}/history.json?t=${Date.now()}`, { cache: "no-store" }).then((r) => (r.ok ? r.json() : { entries: [] })),
+          load(site.repo),
+        ]);
+        const dates = new Set((hist.entries || []).map((e) => e.date).filter(Boolean));
+        const unread = [...dates].filter((d) => !state.read[d]).length;
+        const tab = document.querySelector(`.rd-tab[data-repo="${site.repo}"]`);
+        if (!tab) return;
+        let badge = tab.querySelector(".rd-badge");
+        if (!badge) { badge = document.createElement("span"); tab.appendChild(badge); }
+        badge.className = "rd-badge" + (unread === 0 ? " rd-zero" : "");
+        badge.textContent = unread === 0 ? "✓" : `未読 ${unread}`;
+      } catch { /* 件数が取れなくてもタブは使える */ }
+    }));
   }
 
   const DATE = /(\d{4}-\d{2}-\d{2})/;
@@ -119,6 +173,7 @@
         read = await save((r) => { if (turnOn) r[date] = new Date().toISOString(); else delete r[date]; },
                           `${turnOn ? "Read" : "Unread"} ${date}`);
         paint();
+        refreshTabs();
         toast(turnOn ? "既読にしました" : "未読に戻しました");
       } catch (e) {
         toast(`記録できませんでした：${e.message}`);
@@ -186,6 +241,7 @@
           const now = new Date().toISOString();
           read = await save((r) => { dates.forEach((d) => { if (!r[d]) r[d] = now; }); }, "Mark all as read");
           paint();
+          refreshTabs();
           toast("全部を既読にしました");
         } catch (e) {
           toast(`記録できませんでした：${e.message}`);
@@ -204,6 +260,7 @@
     }).observe(document.body, { childList: true, subtree: true });
   }
 
+  initTabs();
   const isPassage = /\/passages\/\d{4}-\d{2}-\d{2}\//.test(location.pathname) || /today\.html$/.test(location.pathname);
   if (isPassage) {
     const m = location.pathname.match(DATE) || document.title.match(DATE);
