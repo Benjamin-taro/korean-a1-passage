@@ -79,6 +79,10 @@ jobs:
             --disallowedTools "Bash" \
             --permission-mode dontAsk
 
+      # 新しいページにも既読ボタンのスクリプトを読み込ませる
+      - name: Add read button script
+        if: steps.gate.outputs.run == 'true'
+        run: python3 scripts/inject_read.py
       - name: Commit and push
         id: commit
         if: steps.gate.outputs.run == 'true'
