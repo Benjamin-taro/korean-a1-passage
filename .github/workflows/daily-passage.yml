@@ -28,8 +28,8 @@ concurrency:
 env:
   TZ: Europe/London
   UNREAD_LIMIT: 5   # 未読がこの本数以上なら、新しい passage を作らない
-  EVERY_N_DAYS: 2   # 何日に 1 本作るか（1 = 毎日、2 = 1 日おき）
-  DAY_OFFSET: 1     # 1 日おきのとき、どちらの日に作るか（0 か 1。フランス語と韓国語で逆にしてある）
+  EVERY_N_DAYS: 1   # 何日に 1 本作るか（1 = 毎日、2 = 1 日おき）
+  DAY_OFFSET: 0     # 1 日おきのとき、どちらの日に作るか（0 か 1。フランス語と韓国語で逆にしてある）
 
 jobs:
   passage:
