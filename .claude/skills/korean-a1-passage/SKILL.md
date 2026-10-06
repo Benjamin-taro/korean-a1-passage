@@ -72,12 +72,34 @@ A `vocab-used.json` at the project root maintains a flat sorted array of every v
 
 **On execution:**
 1. Read `vocab-used.json` (treat as `[]` if not exists).
-2. When selecting 6–10 key vocabulary items for Part 3, only pick words not in `vocab-used.json`.
+2. When selecting the NEW vocabulary items for Part 3, only pick words not in `vocab-used.json`.
 3. Allow at most **1 repeat** if unavoidable.
 
 **After generating:**
 4. Append new vocabulary words, re-sort alphabetically (case-insensitive), deduplicate, and save.
 5. Save `vocab-used.json` (the workflow commits it).
+
+### Review Words (meet old words again)
+
+New words alone are never met again, so every passage must also **reuse words from earlier passages**. This overrides the "only new words" rule above for the review words (the "at most 1 repeat" limit applies to the NEW words only).
+
+1. Read `read.json` at the repository root (treat as `{"read": {}, "level": {}}` if missing). `read` maps the dates of passages the learner has finished reading.
+2. Review candidates = the `vocab` of `history.json` entries whose `date` is a key of `read`. Words from passages not yet read are not candidates.
+3. Prefer words first seen **3–30 days before the target date**; if there are too few, use older ones. Do not pick words listed in the `review` array of the 3 most recent history entries.
+4. Choose **2–4 review words** that fit today's theme and use them naturally in the passage body. Do not force a word that does not fit — pick another candidate instead.
+5. The vocabulary table (Part 3) contains **4–6 new words** (not in `vocab-used.json`) **plus the 2–4 review words** (6–10 rows in total). Put new words first, then review words. Prefix each review word with `🔁 ` in the first column, and add this line under the table: `🔁 = 以前の passage に出た単語（復習）`. In the HTML, give review rows `class="review"` with a light background (`#f3f8f1`).
+6. In the new `history.json` entry, keep `vocab` for the new words only and add `"review": ["...", "..."]` for the review words. Do **not** add review words to `vocab-used.json` again.
+7. If there are no review candidates yet (nothing read), skip review words and use new words only.
+
+### Difficulty Adjustment (learner feedback)
+
+`read.json` may contain `level`: a map of date → `"easy"` | `"ok"` | `"hard"`, the learner's rating of that passage. Look at the **5 most recently rated** passages:
+
+- **3 or more `"hard"`** → make it easier: length at the lower end of the range, shorter sentences, new words at the minimum count, review words at the maximum count.
+- **3 or more `"easy"`** → make it harder, still inside the A1 limits defined above: length at the upper end of the range, more varied sentence structures that the level allows, new words at the maximum count.
+- Otherwise → keep the usual difficulty.
+
+Never go outside the A1 level definition. Record the decision in the new `history.json` entry as `"difficulty": "easier" | "same" | "harder"`.
 
 ### history.json Format
 
@@ -89,7 +111,9 @@ A `vocab-used.json` at the project root maintains a flat sorted array of every v
       "category": "일상생활",
       "subtopic": "At the café",
       "title": "카페에서",
-      "vocab": ["카페", "커피", "주문하다", "맛있다", "친구"]
+      "vocab": ["카페", "커피", "주문하다", "맛있다", "친구"],
+      "review": ["...", "..."],
+      "difficulty": "same"
     }
   ]
 }
@@ -128,7 +152,7 @@ Do **NOT** include a text-to-speech (TTS) button or any related JavaScript.
 [Japanese translation paragraph by paragraph]
 ```
 
-### Part 3: Vocabulary List (6–10 words)
+### Part 3: Vocabulary List (4–6 new + 2–4 review words)
 
 The vocabulary table must include a **읽는 법** (pronunciation) column showing the standard Korean reading in parenthetical form.
 
@@ -151,14 +175,15 @@ The vocabulary table must include a **읽는 법** (pronunciation) column showin
 2. **Check for existing output**: If `passages/YYYY-MM-DD/YYYY-MM-DD.md` already exists, stop and output:
    `⚠️ passages/YYYY-MM-DD/ already exists. To regenerate, delete the folder first.`
 3. Read `history.json` (treat as empty if not exists).
-4. Select a non-overlapping theme category and subtopic.
-5. Generate an A1-level Korean passage in Hangul.
-6. Write a natural Japanese translation.
-7. Extract 6–10 key vocabulary words with pronunciation and part of speech. Cross-reference `vocab-used.json`. Replace overlaps until at most 1 remains.
-8. Append to `history.json` and save.
-9. Create `passages/YYYY-MM-DD/` directory.
-10. Write `.md` and `.html` files.
-11. Update `index.html` — prepend a new `<li>` at the top of `<ul class="list">`:
+4. Read `read.json` (treat as empty if it does not exist). Decide the difficulty (Difficulty Adjustment) and choose the review words (Review Words) before writing.
+5. Select a non-overlapping theme category and subtopic.
+6. Generate an A1-level Korean passage in Hangul.
+7. Write a natural Japanese translation.
+8. Build the vocabulary table: 4–6 new words (cross-reference `vocab-used.json`; replace overlaps until at most 1 remains) plus the 2–4 review words chosen above, each with all required columns.
+9. Append to `history.json` and save.
+10. Create `passages/YYYY-MM-DD/` directory.
+11. Write `.md` and `.html` files.
+12. Update `index.html` — prepend a new `<li>` at the top of `<ul class="list">`:
     ```html
     <li data-date="YYYY-MM-DD" data-category="CATEGORY">
       <a href="passages/YYYY-MM-DD/YYYY-MM-DD.html">
@@ -169,9 +194,9 @@ The vocabulary table must include a **읽는 법** (pronunciation) column showin
     </li>
     ```
     Category values: `일상생활`, `여행`, `학교/직장`, `건강/스포츠`, `문화/사회`, `미디어/오락`, `인간관계`
-12. Copy HTML to `today.html` at the repo root.
-13. Do NOT run git. The workflow commits and pushes.
-14. Output confirmation:
+13. Copy HTML to `today.html` at the repo root.
+14. Do NOT run git. The workflow commits and pushes.
+15. Output confirmation:
     `✅ Saved to passages/YYYY-MM-DD/ — [Title]`
 
 ## HTML Styling

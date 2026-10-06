@@ -28,6 +28,8 @@ concurrency:
 env:
   TZ: Europe/London
   UNREAD_LIMIT: 5   # 未読がこの本数以上なら、新しい passage を作らない
+  EVERY_N_DAYS: 2   # 何日に 1 本作るか（1 = 毎日、2 = 1 日おき）
+  DAY_OFFSET: 1     # 1 日おきのとき、どちらの日に作るか（0 か 1。フランス語と韓国語で逆にしてある）
 
 jobs:
   passage:
@@ -48,6 +50,11 @@ jobs:
         run: |
           # 定期実行、または日付指定なしの外部起動（cron-job.org）では、今日の分が作成済みならスキップ
           if [ "${{ inputs.check }}" = "true" ]; then echo "run=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          # EVERY_N_DAYS 日に 1 本だけ作る（日付を指定した手動実行は除く）
+          day=$(python3 -c 'import datetime; print(datetime.date.today().toordinal())')
+          if [ -z "${{ inputs.date }}" ] && [ $(( (day + DAY_OFFSET) % EVERY_N_DAYS )) -ne 0 ]; then
+            echo "今日は作らない日（${EVERY_N_DAYS} 日に 1 本）"; echo "run=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
           # 未読が UNREAD_LIMIT 本以上たまっていたら、新しく作らない（日付を指定した手動実行は除く）
           unread=$(python3 scripts/unread_count.py)
           if [ -z "${{ inputs.date }}" ] && [ "$unread" -ge "$UNREAD_LIMIT" ]; then
