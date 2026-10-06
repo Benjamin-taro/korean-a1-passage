@@ -123,9 +123,14 @@
     }`;
   document.head.appendChild(css);
 
+  // ブラウザの自動翻訳（Chrome の Google 翻訳など）が、このスクリプトが出す部品を書き換えないようにする。
+  // 外国語のページなので翻訳の対象になりやすく、翻訳されるとボタンの文字が 1 か所にまとめられて壊れる
+  const noTranslate = (el) => { el.setAttribute("translate", "no"); el.classList.add("notranslate"); el.lang = "ja"; return el; };
+
   function toast(msg) {
     const el = document.createElement("div");
     el.className = "rd-toast";
+    noTranslate(el);
     el.setAttribute("role", "status");
     el.textContent = msg;
     // 右下のボタン類（難しさの欄を含む）に重ならないよう、必ずその上に出す
@@ -140,6 +145,7 @@
   function initTabs() {
     const nav = document.createElement("nav");
     nav.className = "rd-tabs";
+    noTranslate(nav);
     nav.setAttribute("aria-label", "言語の切り替え");
     for (const site of SITES) {
       const a = document.createElement("a");
@@ -180,6 +186,7 @@
   async function initPassage(date) {
     const bar = document.createElement("div");
     bar.className = "rd-bar";
+    noTranslate(bar);
     document.body.appendChild(bar);
     let read = {};
     let level = {};
@@ -253,6 +260,7 @@
 
     const summary = document.createElement("div");
     summary.className = "rd-summary";
+    noTranslate(summary);
     const anchor = document.querySelector("#filterBar") || document.querySelector("ul.list") || document.body.firstElementChild;
     anchor.parentNode.insertBefore(summary, anchor);
 
@@ -267,8 +275,8 @@
         const li = a.closest("li");
         if (li) li.classList.toggle("rd-li-read", isRead);
         let mark = a.querySelector(".rd-mark");
-        if (!mark) { mark = document.createElement("span"); a.insertBefore(mark, a.firstChild); }
-        const cls = "rd-mark " + (isRead ? "rd-yes" : "rd-no");
+        if (!mark) { mark = noTranslate(document.createElement("span")); a.insertBefore(mark, a.firstChild); }
+        const cls = "notranslate rd-mark " + (isRead ? "rd-yes" : "rd-no");
         const text = isRead ? "✓" : "●";
         if (mark.className !== cls) mark.className = cls;
         if (mark.textContent !== text) mark.textContent = text;
