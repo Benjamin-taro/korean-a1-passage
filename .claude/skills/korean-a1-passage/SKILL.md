@@ -143,31 +143,7 @@ The vocabulary table must include a **읽는 법** (pronunciation) column showin
 - **읽는 법**: Standard pronunciation (e.g., 학교 → [학꾜], 먹다 → [먹따]). Only note when pronunciation differs noticeably from spelling.
 - **품사**: 명사, 동사, 형용사, 부사, etc.
 
-### Part 4: Comprehension Questions (3 questions)
-
-Multiple-choice questions in Korean. Each option must include its English and Japanese translation in parentheses.
-
-```
-❓ 읽기 문제
-
-1. [Question (in Korean)]
-   a) ... (English / 日本語)
-   b) ... (English / 日本語)
-   c) ... (English / 日本語)
-
-2. ...
-3. ...
-```
-
-### Part 5: Answers and Explanations
-
-```
-✅ 정답
-
-1. [Correct answer] — [Brief explanation in Japanese]
-2. ...
-3. ...
-```
+> **問題と解答は作らない。** 出力は Part 1〜3（本文・訳・語彙）だけにする。Markdown にも HTML にも、読解問題・解答・解説のセクションを入れない。
 
 ## Execution Steps
 
@@ -179,12 +155,10 @@ Multiple-choice questions in Korean. Each option must include its English and Ja
 5. Generate an A1-level Korean passage in Hangul.
 6. Write a natural Japanese translation.
 7. Extract 6–10 key vocabulary words with pronunciation and part of speech. Cross-reference `vocab-used.json`. Replace overlaps until at most 1 remains.
-8. Create 3 comprehension questions in Korean.
-9. Create answers and explanations in Japanese.
-10. Append to `history.json` and save.
-11. Create `passages/YYYY-MM-DD/` directory.
-12. Write `.md` and `.html` files.
-13. Update `index.html` — prepend a new `<li>` at the top of `<ul class="list">`:
+8. Append to `history.json` and save.
+9. Create `passages/YYYY-MM-DD/` directory.
+10. Write `.md` and `.html` files.
+11. Update `index.html` — prepend a new `<li>` at the top of `<ul class="list">`:
     ```html
     <li data-date="YYYY-MM-DD" data-category="CATEGORY">
       <a href="passages/YYYY-MM-DD/YYYY-MM-DD.html">
@@ -195,9 +169,9 @@ Multiple-choice questions in Korean. Each option must include its English and Ja
     </li>
     ```
     Category values: `일상생활`, `여행`, `학교/직장`, `건강/스포츠`, `문화/사회`, `미디어/오락`, `인간관계`
-14. Copy HTML to `today.html` at the repo root.
-15. Do NOT run git. The workflow commits and pushes.
-16. Output confirmation:
+12. Copy HTML to `today.html` at the repo root.
+13. Do NOT run git. The workflow commits and pushes.
+14. Output confirmation:
     `✅ Saved to passages/YYYY-MM-DD/ — [Title]`
 
 ## HTML Styling
@@ -208,7 +182,6 @@ Use the same visual style as the DELE B1 passages (Georgia serif, warm tan borde
 
 - Passage is 100–150 Korean words
 - No vocabulary or grammar above A1/TOPIK 1
-- Questions are clearly answerable from the text
 - Theme differs from recent 7 entries (checked via `history.json`)
 - Pronunciation (읽는 법) column is filled for all vocabulary items
 - `history.json` and `vocab-used.json` are updated
