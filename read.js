@@ -69,10 +69,11 @@
       border: 1.5px solid #b8862f; background: #fffaf0; color: #5b4310; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
     .rd-btn[aria-pressed="true"] { background: #2f7d4f; border-color: #2f7d4f; color: #fff; }
     .rd-btn:disabled { opacity: .6; cursor: progress; }
-    .rd-levels { display: flex; gap: 6px; align-items: center; background: #fffaf0; border: 1px solid #e3d5b8; border-radius: 999px;
-      padding: 5px 8px 5px 12px; box-shadow: 0 2px 8px rgba(0,0,0,.12); font-size: 13px; color: #5b4310; }
+    .rd-levels { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; align-items: center; box-sizing: border-box; max-width: 100%;
+      background: #fffaf0; border: 1px solid #e3d5b8; border-radius: 18px;
+      padding: 6px 8px 6px 12px; box-shadow: 0 2px 8px rgba(0,0,0,.12); font-size: 13px; color: #5b4310; }
     .rd-levels[hidden] { display: none; }
-    .rd-level { font: inherit; font-size: 13px; padding: 6px 11px; border-radius: 999px; cursor: pointer; min-height: 36px;
+    .rd-level { font: inherit; font-size: 13px; padding: 6px 10px; border-radius: 999px; cursor: pointer; min-height: 36px; white-space: nowrap; flex: 0 0 auto;
       border: 1px solid #d9c7a0; background: #fff; color: #5b4310; }
     .rd-level[aria-pressed="true"] { background: #5b4310; border-color: #5b4310; color: #fff; }
     .rd-note { font-size: 13px; background: #fff; border: 1px solid #ddd; border-radius: 999px; padding: 8px 14px; color: #555;
@@ -89,6 +90,12 @@
       border: 1px solid #c9b48a; background: #fff; color: #5b4310; }
     .rd-summary button[aria-pressed="true"] { background: #5b4310; color: #fff; border-color: #5b4310; }
     body.rd-unread-only li.rd-li-read { display: none !important; }
+    /* 狭い画面では、一覧の行を 2 段にして横にはみ出さないようにする（題名 → タグと日付） */
+    @media (max-width: 600px) {
+      .list li a { flex-wrap: wrap; row-gap: 4px; }
+      .list li a .title-text { flex: 1 1 calc(100% - 34px); min-width: 0; overflow-wrap: anywhere; }
+      .list li a .date { margin-left: auto; }
+    }
     .rd-tabs { position: sticky; top: 0; z-index: 40; display: flex; gap: 6px; padding: 8px 12px; margin: 0 0 12px;
       background: rgba(255,250,240,.96); border-bottom: 1px solid #e3d5b8; overflow-x: auto;
       font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif; }
@@ -100,7 +107,9 @@
     @media (max-width: 480px) {
       .rd-tabs { gap: 4px; padding: 8px 8px; }
       .rd-tab { padding: 6px 9px; font-size: 13px; gap: 4px; }
-      .rd-badge { font-size: 11px; padding: 1px 5px; }
+      .rd-badge { font-size: 11px; padding: 1px 6px; }
+      .rd-badge-label { display: none; }
+      .rd-tab { flex: 1 1 0; justify-content: center; min-width: 0; white-space: nowrap; }
     }
     @media (prefers-color-scheme: dark) {
       .rd-btn { background: #2b2620; color: #f0e2c4; border-color: #b8862f; }
@@ -154,7 +163,8 @@
         let badge = tab.querySelector(".rd-badge");
         if (!badge) { badge = document.createElement("span"); tab.appendChild(badge); }
         badge.className = "rd-badge" + (unread === 0 ? " rd-zero" : "");
-        badge.textContent = unread === 0 ? "✓" : `未読 ${unread}`;
+        badge.title = unread === 0 ? "すべて読んだ" : `未読 ${unread} 本`;
+        badge.innerHTML = unread === 0 ? "✓" : `<span class="rd-badge-label">未読 </span>${unread}`;
       } catch { /* 件数が取れなくてもタブは使える */ }
     }));
   }
