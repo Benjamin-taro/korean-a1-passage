@@ -128,6 +128,10 @@
     el.className = "rd-toast";
     el.setAttribute("role", "status");
     el.textContent = msg;
+    // 右下のボタン類（難しさの欄を含む）に重ならないよう、必ずその上に出す
+    const bar = document.querySelector(".rd-bar");
+    if (bar) el.style.bottom = `${Math.round(window.innerHeight - bar.getBoundingClientRect().top + 10)}px`;
+    document.querySelectorAll(".rd-toast").forEach((t) => t.remove());
     document.body.appendChild(el);
     setTimeout(() => el.remove(), 2600);
   }
