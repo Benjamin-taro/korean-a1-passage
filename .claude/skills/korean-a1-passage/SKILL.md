@@ -19,13 +19,19 @@
 
 Run once every morning to get a short TOPIK 1 / beginner Korean reading passage and a complete study set.
 
-## Korean A1 Level Criteria
+## Korean A1 Level Criteria (very easy)
 
-- **Vocabulary**: Beginner level (greetings, numbers, family words, food, colors, simple daily actions, basic nouns). TOPIK 1 vocabulary list as reference.
-- **Grammar**: Formal polite endings (-아요/어요/해요, -입니다/입니까), basic particles (은/는, 이/가, 을/를, 에, 에서, 와/과, 도, 만), negation (안, -지 않다), basic question forms, simple connectives (그리고, 그런데, 그래서, 하지만). Avoid relative clauses, honorifics beyond 요-form, and complex grammar patterns.
-- **Length**: 100–150 words (Korean word count)
-- **Structure**: 3–4 short paragraphs
-- **Sentence complexity**: Short, simple sentences. One clause per sentence where possible.
+Learner feedback (2026-10-13): the earlier 100–150-word passages were **too hard**. Keep every passage **very short and very simple**. When in doubt, make it easier.
+
+- **Length**: **50–80 words** (Korean word count, spaces as separators). Never exceed 80. About 8–12 sentences in total.
+- **Structure**: 2–3 very short paragraphs (3–4 sentences each).
+- **Sentences**: **at most 7 words per sentence**, one clause per sentence, always. Subject – (object) – verb. No clause chaining with -고 / -아서·어서 / -지만; start a new sentence with 그리고 / 그래서 / 하지만 instead.
+- **Grammar (allowed)**: present-tense polite endings only (-아요/어요/해요, 이에요/예요, 있어요/없어요), particles 은/는, 이/가, 을/를, 에, 에서, 도, 하고/와/과, negation 안 + verb, -고 싶어요, simple questions (뭐 / 어디 / 누구 + 요-form).
+- **Grammar (not allowed)**: past tense (-았/었어요), future (-(으)ㄹ 거예요), honorific -(으)세요, noun modifiers (-는 / -(으)ㄴ + noun), quotations ("…" 하고 말해요), -지 않다, -(으)면, -(으)러, -(으)ㄹ 수 있다, 입니다/입니까.
+- **Vocabulary**: only the most basic TOPIK 1 words (roughly the first 300): family, food and drinks, places (집, 학교, 회사, 식당, 카페, 공원, 시장, 지하철), time words (아침, 점심, 저녁, 오늘, 내일, 주말, days of the week), everyday verbs (가다, 오다, 먹다, 마시다, 보다, 사다, 자다, 일어나다, 공부하다, 일하다, 만나다, 좋아하다, 읽다, 듣다) and adjectives (좋다, 크다, 작다, 많다, 맛있다, 재미있다, 바쁘다, 예쁘다). Repeat the same words rather than adding variety.
+- **Numbers and counters**: avoid them. No 한 장 / 두 개 / 세 명, no Sino-Korean numbers, no clock times (use 아침 / 점심 / 저녁 instead).
+- **Proper nouns**: only Korean given names and 서울 / 부산. No historical figures, holidays, palaces or institutions (세종대왕, 한글날, 경복궁 are too hard).
+- **New words**: each new vocabulary word must appear **at least twice** in the passage so it is reinforced.
 - **Script**: Hangul only in the passage body. No romanization in the passage.
 
 ## Cultural Setting
@@ -47,6 +53,8 @@ Select randomly from the following categories (use a different theme each time):
 5. **문화/사회 (Culture & society)**: Festivals, traditions, cultural events
 6. **미디어/오락 (Media & entertainment)**: Movies, music, simple social activities
 7. **인간관계 (Relationships)**: Family, friends, meeting someone new
+
+Whatever the category, the scene must be an everyday one told with basic words (a birthday, lunch with a friend, a walk in the park). 문화/사회 means e.g. eating 떡 with family on a holiday, not explaining the holiday.
 
 ## History Management (Avoiding Repetition)
 
@@ -86,8 +94,8 @@ New words alone are never met again, so every passage must also **reuse words fr
 1. Read `read.json` at the repository root (treat as `{"read": {}, "level": {}}` if missing). `read` maps the dates of passages the learner has finished reading.
 2. Review candidates = the `vocab` of `history.json` entries whose `date` is a key of `read`. Words from passages not yet read are not candidates.
 3. Prefer words first seen **3–30 days before the target date**; if there are too few, use older ones. Do not pick words listed in the `review` array of the 3 most recent history entries.
-4. Choose **2–4 review words** that fit today's theme and use them naturally in the passage body. Do not force a word that does not fit — pick another candidate instead.
-5. The vocabulary table (Part 3) contains **4–6 new words** (not in `vocab-used.json`) **plus the 2–4 review words** (6–10 rows in total). Put new words first, then review words. Prefix each review word with `🔁 ` in the first column, and add this line under the table: `🔁 = 以前の passage に出た単語（復習）`. In the HTML, give review rows `class="review"` with a light background (`#f3f8f1`).
+4. Choose **2–3 review words** that fit today's theme and use them naturally in the passage body. Do not force a word that does not fit — pick another candidate instead.
+5. The vocabulary table (Part 3) contains **3–4 new words** (not in `vocab-used.json`) **plus the 2–3 review words** (5–7 rows in total). Put new words first, then review words. Prefix each review word with `🔁 ` in the first column, and add this line under the table: `🔁 = 以前の passage に出た単語（復習）`. In the HTML, give review rows `class="review"` with a light background (`#f3f8f1`).
 6. In the new `history.json` entry, keep `vocab` for the new words only and add `"review": ["...", "..."]` for the review words. Do **not** add review words to `vocab-used.json` again.
 7. If there are no review candidates yet (nothing read), skip review words and use new words only.
 
@@ -152,7 +160,7 @@ Do **NOT** include a text-to-speech (TTS) button or any related JavaScript.
 [Japanese translation paragraph by paragraph]
 ```
 
-### Part 3: Vocabulary List (4–6 new + 2–4 review words)
+### Part 3: Vocabulary List (3–4 new + 2–3 review words)
 
 The vocabulary table must include a **읽는 법** (pronunciation) column showing the standard Korean reading in parenthetical form.
 
@@ -179,7 +187,7 @@ The vocabulary table must include a **읽는 법** (pronunciation) column showin
 5. Select a non-overlapping theme category and subtopic.
 6. Generate an A1-level Korean passage in Hangul.
 7. Write a natural Japanese translation.
-8. Build the vocabulary table: 4–6 new words (cross-reference `vocab-used.json`; replace overlaps until at most 1 remains) plus the 2–4 review words chosen above, each with all required columns.
+8. Build the vocabulary table: 3–4 new words (cross-reference `vocab-used.json`; replace overlaps until at most 1 remains) plus the 2–3 review words chosen above, each with all required columns.
 9. Append to `history.json` and save.
 10. Create `passages/YYYY-MM-DD/` directory.
 11. Write `.md` and `.html` files.
@@ -205,7 +213,9 @@ Use the same visual style as the DELE B1 passages (Georgia serif, warm tan borde
 
 ## Quality Checks
 
-- Passage is 100–150 Korean words
+- Passage is 50–80 Korean words and every sentence has at most 7 words
+- Present tense only; nothing from the "Grammar (not allowed)" list
+- Each new vocabulary word appears at least twice in the passage
 - No vocabulary or grammar above A1/TOPIK 1
 - Theme differs from recent 7 entries (checked via `history.json`)
 - Pronunciation (읽는 법) column is filled for all vocabulary items
