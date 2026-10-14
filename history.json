@@ -1,6 +1,15 @@
 {
   "entries": [
     {
+      "date": "2026-10-14",
+      "category": "일상생활",
+      "subtopic": "Weekend shopping at the market with mom",
+      "title": "주말 시장",
+      "vocab": ["시장", "사과", "빵", "가게"],
+      "review": ["사다", "우유", "주말"],
+      "difficulty": "same"
+    },
+    {
       "date": "2026-08-13",
       "category": "미디어/오락",
       "subtopic": "Watching a Korean drama with family",
