@@ -1,6 +1,15 @@
 {
   "entries": [
     {
+      "date": "2026-10-15",
+      "category": "건강/스포츠",
+      "subtopic": "Exercising with dad at the park",
+      "title": "공원 운동",
+      "vocab": ["아빠", "나무", "달리다", "물"],
+      "review": ["공원", "운동", "맛있다"],
+      "difficulty": "same"
+    },
+    {
       "date": "2026-10-14",
       "category": "일상생활",
       "subtopic": "Weekend shopping at the market with mom",
